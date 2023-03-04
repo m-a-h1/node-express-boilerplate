@@ -10,12 +10,15 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const compression = require("compression");
 const cors = require("cors");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const l1Router = require("./routes/v1/l1");
 const l2Router = require("./routes/v1/l2");
 const config = require("./config/config");
+const swaggerDocs = require("./utils/swagger");
 
 // Start express app
 const app = express();
@@ -80,6 +83,8 @@ app.use((req, res, next) => {
 // 3) ROUTES\
 app.use("/api/v1/l1", l1Router);
 app.use("/api/v1/l2", l2Router);
+
+swaggerDocs(app, config.port);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

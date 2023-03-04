@@ -25,6 +25,6 @@ exports.username = (value, helpers) => {
 };
 
 exports.phone = (value, helpers) => {
-  if (validator.isMobilePhone(value)) return value;
+  if (validator.isMobilePhone(value, "ir-IR")) return value;
   return helpers.message("please provide a valid phone number");
 };

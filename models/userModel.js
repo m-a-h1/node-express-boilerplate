@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide your phone number"],
     unique: true,
-    validate: [(v) => validator.isMobilePhone(v, "ir-IR"), "Please provide a valid email"],
+    validate: [(v) => validator.isMobilePhone(v, "ir-IR"), "Please provide a valid phone"],
   },
   photo: {
     type: String,

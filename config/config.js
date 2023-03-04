@@ -1,8 +1,12 @@
 const dotenv = require("dotenv");
 const path = require("path");
 const Joi = require("joi");
+const j2s = require("joi-to-swagger");
+const { signUp } = require("../validations/user.validation");
 
 dotenv.config({ path: path.join(__dirname, "../../.env") });
+
+const { swagger: signupSchema, components } = j2s(signUp);
 //configs
 const envVarsSchema = Joi.object()
   .keys({
@@ -61,5 +65,66 @@ module.exports = {
     max: 100,
     windowMs: 60 * 60 * 1000,
     message: "Too many requests from this IP, please try again in an hour!",
+  },
+  swagger: {
+    swaggerDefinition: {
+      openapi: "3.0.0",
+      info: {
+        title: "express boilerplate apis",
+        description: "api documentation",
+        content: {
+          name: "a test name",
+        },
+        servers: ["http://localhost:3000"],
+      },
+      components: {
+        securitySchema: {
+          bearerAuth: {
+            type: "http",
+            schema: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
+      },
+      paths: {
+        "/newSignup": {
+          post: {
+            summery: "just a test api",
+            description: "a test description",
+            requestBody: {
+              required: true,
+              content: {
+                "application/json": {
+                  schema: signupSchema,
+                },
+              },
+            },
+            response: {
+              200: {
+                description: "successful message",
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      properties: {
+                        name: {
+                          type: "string",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    apis: ["routes/v1/l2/*.routes.js"],
   },
 };

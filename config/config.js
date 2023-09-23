@@ -35,6 +35,20 @@ if (error) {
 module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT || 3000,
+  cookie: (req) => {
+    const cookieOptions = {
+      expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+      httpOnly: false,
+      secure: !!req?.get("origin"), // if origin does not exist it means we are using postman, so turns the secure false
+      sameSite: "none", // TODO: check it on production
+    };
+    if (process.env.NODE_ENV === "production") {
+      cookieOptions.sameSite = "none";
+      cookieOptions.secure = true;
+      cookieOptions.httpOnly = true;
+    }
+    return cookieOptions;
+  },
   mongoose: {
     url:
       process.env.NODE_ENV === "development" ? process.env.DATABASE_LOCAL : process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD),
